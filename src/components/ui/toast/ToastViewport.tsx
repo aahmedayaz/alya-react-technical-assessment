@@ -1,4 +1,4 @@
-import type { ToastItem } from './toast-context'
+import type { ToastItem } from '../../../contexts/ToastContext'
 
 type ToastViewportProps = {
   items: ToastItem[]

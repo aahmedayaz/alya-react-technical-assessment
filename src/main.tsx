@@ -1,13 +1,15 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
+import './styles/globals.css'
 import App from './App.tsx'
-import { AppProvider } from './context/AppContext'
+import { ThemeProvider, ToastProvider } from './contexts'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <AppProvider>
-      <App />
-    </AppProvider>
+    <ThemeProvider>
+      <ToastProvider>
+        <App />
+      </ToastProvider>
+    </ThemeProvider>
   </StrictMode>,
 )

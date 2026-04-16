@@ -1,10 +1,26 @@
-import { useCallback, useMemo, useState, type ReactNode } from 'react'
 import {
-  ToastContext,
-  type ToastContextValue,
-  type ToastItem,
-} from './toast-context'
-import { ToastViewport } from './ToastViewport'
+  createContext,
+  useCallback,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react'
+import { ToastViewport } from '../components/ui/toast/ToastViewport'
+
+export type ToastType = 'success' | 'error' | 'warning' | 'info'
+
+export type ToastItem = {
+  id: string
+  type: ToastType
+  message: string
+}
+
+export type ToastContextValue = {
+  push: (toast: Omit<ToastItem, 'id'>) => void
+  dismiss: (id: string) => void
+}
+
+export const ToastContext = createContext<ToastContextValue | null>(null)
 
 function createId() {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`
