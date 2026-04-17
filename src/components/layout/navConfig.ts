@@ -13,7 +13,7 @@ export const primaryNav: {
   glyph: NavGlyphId
   showInMobileDock: boolean
 }[] = [
-  { id: 'dashboard', label: 'Dashboard', glyph: 'logoMark', showInMobileDock: true },
+  { id: 'dashboard', label: 'Dashboard', glyph: 'dashboard', showInMobileDock: true },
   { id: 'analytics', label: 'Analytics', glyph: 'analytics', showInMobileDock: true },
   { id: 'reports', label: 'Reports', glyph: 'reports', showInMobileDock: false },
   { id: 'users', label: 'Users', glyph: 'users', showInMobileDock: true },

@@ -5,15 +5,10 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import { ToastViewport } from '../components/ui/toast/ToastViewport'
+import { ToastStack } from '../components/library/ToastStack'
+import type { ToastItem } from '../types/toast'
 
-export type ToastType = 'success' | 'error' | 'warning' | 'info'
-
-export type ToastItem = {
-  id: string
-  type: ToastType
-  message: string
-}
+export type { ToastItem, ToastType } from '../types/toast'
 
 export type ToastContextValue = {
   push: (toast: Omit<ToastItem, 'id'>) => void
@@ -45,7 +40,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   return (
     <ToastContext.Provider value={value}>
       {children}
-      <ToastViewport items={items} onDismiss={dismiss} />
+      <ToastStack items={items} onDismiss={dismiss} />
     </ToastContext.Provider>
   )
 }

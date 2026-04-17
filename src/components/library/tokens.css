@@ -1,0 +1,22 @@
+:root {
+  --lib-font: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --lib-radius-sm: 8px;
+  --lib-radius-md: 12px;
+  --lib-radius-lg: 16px;
+  --lib-primary: #40408b;
+  --lib-primary-hover: #353674;
+  --lib-surface: #ffffff;
+  --lib-muted: #6b7280;
+  --lib-border: #e5e7eb;
+  --lib-danger: #b91c1c;
+  --lib-danger-bg: #fee2e2;
+  --lib-secondary-bg: #eef2ff;
+  --lib-ghost-border: #e5e7eb;
+  --lib-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  --lib-success: #166534;
+  --lib-success-bg: #dcfce7;
+  --lib-warning: #92400e;
+  --lib-warning-bg: #fef3c7;
+  --lib-info: #1d4ed8;
+  --lib-info-bg: #dbeafe;
+}

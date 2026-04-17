@@ -1,16 +1,37 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import type { NavRouteId } from './navConfig'
 import { BottomNav } from './BottomNav'
 import { Navbar } from './Navbar'
 import { Sidebar } from './Sidebar'
+import { useToast } from '../../hooks'
 
-type LayoutProps = {
-  children?: ReactNode
+const paths: Record<NavRouteId, string> = {
+  dashboard: '/',
+  analytics: '/products',
+  reports: '/onboarding',
+  users: '/library',
+  settings: '/settings',
 }
 
-export function Layout({ children }: LayoutProps) {
-  const [activeId, setActiveId] = useState<NavRouteId>('dashboard')
+function pathToActive(pathname: string): NavRouteId {
+  if (pathname.startsWith('/products')) return 'analytics'
+  if (pathname.startsWith('/onboarding')) return 'reports'
+  if (pathname.startsWith('/library')) return 'users'
+  if (pathname.startsWith('/settings')) return 'settings'
+  return 'dashboard'
+}
+
+export function Layout() {
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { push } = useToast()
+
+  const activeId = useMemo(
+    () => pathToActive(location.pathname),
+    [location.pathname],
+  )
 
   useEffect(() => {
     if (!drawerOpen) return
@@ -30,6 +51,19 @@ export function Layout({ children }: LayoutProps) {
     }
   }, [drawerOpen])
 
+  const onSelect = (id: NavRouteId) => {
+    navigate(paths[id])
+  }
+
+  const onNewInsight = () => {
+    push({
+      type: 'info',
+      title: 'New insight',
+      message: 'Opening onboarding.',
+    })
+    navigate('/onboarding')
+  }
+
   return (
     <div className="min-h-dvh bg-page text-foreground">
       <a
@@ -39,7 +73,11 @@ export function Layout({ children }: LayoutProps) {
         Skip to content
       </a>
       <div className="hidden laptop:fixed laptop:inset-y-0 laptop:left-0 laptop:z-30 laptop:flex">
-        <Sidebar activeId={activeId} onSelect={setActiveId} />
+        <Sidebar
+          activeId={activeId}
+          onSelect={onSelect}
+          onNewInsight={onNewInsight}
+        />
       </div>
       {drawerOpen ? (
         <div className="fixed inset-0 z-50 laptop:hidden">
@@ -53,7 +91,11 @@ export function Layout({ children }: LayoutProps) {
             <Sidebar
               activeId={activeId}
               onSelect={(id) => {
-                setActiveId(id)
+                onSelect(id)
+                setDrawerOpen(false)
+              }}
+              onNewInsight={() => {
+                onNewInsight()
                 setDrawerOpen(false)
               }}
             />
@@ -64,13 +106,13 @@ export function Layout({ children }: LayoutProps) {
       <div className="flex min-h-dvh flex-col pt-14 laptop:pl-[260px] laptop:pt-16">
         <main
           id="main-content"
-          className="flex-1 px-4 pb-24 pt-2 laptop:px-8 laptop:pb-8 laptop:pt-4"
+          className="flex-1 px-4 pb-24 pt-2 laptop:px-8 laptop:pb-8 laptop:pt-4 bg-sidebar"
           role="main"
           tabIndex={-1}
         >
-          {children}
+          <Outlet />
         </main>
-        <BottomNav activeId={activeId} onSelect={setActiveId} />
+        <BottomNav activeId={activeId} onSelect={onSelect} />
       </div>
     </div>
   )

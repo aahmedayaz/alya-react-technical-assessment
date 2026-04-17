@@ -5,6 +5,7 @@ import { NavGlyph } from './NavGlyph'
 type SidebarProps = {
   activeId: NavRouteId
   onSelect: (id: NavRouteId) => void
+  onNewInsight?: () => void
   className?: string
   innerClassName?: string
 }
@@ -12,6 +13,7 @@ type SidebarProps = {
 export function Sidebar({
   activeId,
   onSelect,
+  onNewInsight,
   className,
   innerClassName,
 }: SidebarProps) {
@@ -55,6 +57,7 @@ export function Sidebar({
         <div className="mt-auto border-t border-foreground/10 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
           <button
             type="button"
+            onClick={() => onNewInsight?.()}
             className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary py-3 text-sm font-semibold text-card shadow-sm transition-opacity hover:opacity-95 active:opacity-90"
           >
             <span className="text-lg leading-none">+</span>

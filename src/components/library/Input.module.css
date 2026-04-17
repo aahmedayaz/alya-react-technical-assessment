@@ -1,0 +1,74 @@
+.wrap {
+  font-family: var(--lib-font);
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  width: 100%;
+}
+
+.label {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--lib-muted);
+  text-transform: uppercase;
+}
+
+.field {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: var(--lib-radius-md);
+  border: 1px solid var(--lib-border);
+  background: #f3f4f6;
+  padding: 0 0.75rem;
+  min-height: 48px;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.field:focus-within {
+  border-color: rgba(64, 64, 139, 0.45);
+  box-shadow: 0 0 0 3px rgba(64, 64, 139, 0.15);
+  background: #fff;
+}
+
+.errorField {
+  border-color: rgba(185, 28, 28, 0.55);
+  background: #fff5f5;
+}
+
+.errorField:focus-within {
+  border-color: rgba(185, 28, 28, 0.75);
+  box-shadow: 0 0 0 3px rgba(185, 28, 28, 0.12);
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  font-size: 0.9375rem;
+  color: #111827;
+  outline: none;
+}
+
+.prefix,
+.suffix {
+  display: inline-flex;
+  align-items: center;
+  color: var(--lib-muted);
+  flex-shrink: 0;
+}
+
+.helper {
+  font-size: 0.8125rem;
+  color: var(--lib-muted);
+}
+
+.errorText {
+  font-size: 0.8125rem;
+  color: var(--lib-danger);
+}

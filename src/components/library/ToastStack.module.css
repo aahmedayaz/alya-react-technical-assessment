@@ -1,0 +1,121 @@
+.region {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 150;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  width: min(360px, calc(100vw - 2rem));
+  pointer-events: none;
+}
+
+.card {
+  pointer-events: auto;
+  background: var(--lib-surface);
+  border: 1px solid var(--lib-border);
+  border-radius: var(--lib-radius-md);
+  box-shadow: var(--lib-shadow);
+  overflow: hidden;
+}
+
+.row {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.85rem 0.9rem;
+}
+
+.accent {
+  width: 4px;
+  align-self: stretch;
+  border-radius: 999px;
+}
+
+.success {
+  background: var(--lib-success);
+}
+
+.error {
+  background: #b91c1c;
+}
+
+.warning {
+  background: var(--lib-warning);
+}
+
+.info {
+  background: var(--lib-info);
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: #111827;
+}
+
+.message {
+  margin-top: 0.15rem;
+  font-size: 0.8125rem;
+  color: var(--lib-muted);
+  line-height: 1.35;
+}
+
+.close {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  color: var(--lib-muted);
+  font-size: 1.1rem;
+  line-height: 1;
+  padding: 0.15rem;
+  border-radius: 8px;
+}
+
+.close:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.progressTrack {
+  height: 3px;
+  background: #f3f4f6;
+}
+
+.progressBar {
+  height: 3px;
+  width: 100%;
+  transform-origin: left center;
+  animation-name: libToastShrink;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+.successBar {
+  background: var(--lib-success);
+}
+
+.errorBar {
+  background: #b91c1c;
+}
+
+.warningBar {
+  background: var(--lib-warning);
+}
+
+.infoBar {
+  background: var(--lib-info);
+}
+
+@keyframes libToastShrink {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}

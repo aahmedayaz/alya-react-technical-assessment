@@ -1,0 +1,35 @@
+.host {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.tip {
+  position: absolute;
+  z-index: 120;
+  left: 50%;
+  transform: translate(-50%, calc(-100% - 8px));
+  background: #111827;
+  color: #fff;
+  font-size: 0.75rem;
+  line-height: 1.25;
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  max-width: 240px;
+  width: max-content;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+}
+
+.host:hover .tip,
+.host:focus-within .tip {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .host:active .tip {
+    opacity: 1;
+  }
+}
