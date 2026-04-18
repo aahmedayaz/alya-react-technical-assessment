@@ -59,29 +59,30 @@ export function OnboardingFlow() {
     [preferences],
   )
 
-  const step1Valid = useMemo(
-    () => Object.values(personalErrors).every((e) => !e),
-    [personalErrors],
-  )
-  const step2Valid = useMemo(
-    () => Object.values(preferencesErrors).every((e) => !e),
-    [preferencesErrors],
+  const personalStepOk = Object.values(personalErrors).every((msg) => !msg)
+  const preferencesStepOk = Object.values(preferencesErrors).every(
+    (msg) => !msg,
   )
 
   const blurPersonal = useCallback((key: keyof OnboardingPersonal) => {
-    setTouched((t) => ({ ...t, [key]: true }))
+    setTouched((prev) => ({ ...prev, [key]: true }))
   }, [])
 
   const onNext = () => {
     if (step === 1) {
-      setTouched((t) => ({ ...t, fullName: true, email: true, phone: true }))
-      if (!step1Valid) return
+      setTouched((prev) => ({
+        ...prev,
+        fullName: true,
+        email: true,
+        phone: true,
+      }))
+      if (!personalStepOk) return
       setStep(2)
       return
     }
     if (step === 2) {
       setStep2Attempted(true)
-      if (!step2Valid) return
+      if (!preferencesStepOk) return
       setStep(3)
     }
   }
@@ -164,7 +165,7 @@ export function OnboardingFlow() {
               label="Full name"
               value={personal.fullName}
               onChange={(e) =>
-                setPersonal((p) => ({ ...p, fullName: e.target.value }))
+                setPersonal((prev) => ({ ...prev, fullName: e.target.value }))
               }
               onBlur={() => blurPersonal('fullName')}
               error={touched.fullName ? personalErrors.fullName : ''}
@@ -176,7 +177,7 @@ export function OnboardingFlow() {
               type="email"
               value={personal.email}
               onChange={(e) =>
-                setPersonal((p) => ({ ...p, email: e.target.value }))
+                setPersonal((prev) => ({ ...prev, email: e.target.value }))
               }
               onBlur={() => blurPersonal('email')}
               error={touched.email ? personalErrors.email : ''}
@@ -187,7 +188,7 @@ export function OnboardingFlow() {
               label="Phone number"
               value={personal.phone}
               onChange={(e) =>
-                setPersonal((p) => ({ ...p, phone: e.target.value }))
+                setPersonal((prev) => ({ ...prev, phone: e.target.value }))
               }
               onBlur={() => blurPersonal('phone')}
               error={touched.phone ? personalErrors.phone : ''}
@@ -212,11 +213,11 @@ export function OnboardingFlow() {
                       type="button"
                       onClick={() => {
                         setTouchedPrefs(true)
-                        setPreferences((p) => ({
-                          ...p,
+                        setPreferences((prev) => ({
+                          ...prev,
                           interests: on
-                            ? p.interests.filter((t) => t !== tag)
-                            : [...p.interests, tag],
+                            ? prev.interests.filter((item) => item !== tag)
+                            : [...prev.interests, tag],
                         }))
                       }}
                       className={`cursor-pointer rounded-full border px-3 py-1.5 text-sm font-semibold transition-colors ${
@@ -255,8 +256,8 @@ export function OnboardingFlow() {
                 value={preferences.notifyLevel}
                 onChange={(e) => {
                   setTouchedPrefs(true)
-                  setPreferences((p) => ({
-                    ...p,
+                  setPreferences((prev) => ({
+                    ...prev,
                     notifyLevel: Number(e.target.value),
                   }))
                 }}
@@ -279,7 +280,10 @@ export function OnboardingFlow() {
                 aria-checked={preferences.darkMode}
                 onClick={() => {
                   setTouchedPrefs(true)
-                  setPreferences((p) => ({ ...p, darkMode: !p.darkMode }))
+                  setPreferences((prev) => ({
+                    ...prev,
+                    darkMode: !prev.darkMode,
+                  }))
                 }}
                 className={`relative h-8 w-14 rounded-full transition-colors ${
                   preferences.darkMode ? 'bg-primary' : 'bg-card/20'
@@ -336,7 +340,7 @@ export function OnboardingFlow() {
               <Button
                 type="submit"
                 variant="primary"
-                disabled={step === 1 ? !step1Valid : !step2Valid}
+                disabled={step === 1 ? !personalStepOk : !preferencesStepOk}
               >
                 {step === 1 ? 'Next step' : 'Continue to review'}
               </Button>

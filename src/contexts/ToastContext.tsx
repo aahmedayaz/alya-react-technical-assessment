@@ -29,7 +29,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const dismiss = useCallback<ToastContextValue['dismiss']>((id) => {
-    setItems((prev) => prev.filter((t) => t.id !== id))
+    setItems((prev) => prev.filter((item) => item.id !== id))
   }, [])
 
   const value = useMemo<ToastContextValue>(

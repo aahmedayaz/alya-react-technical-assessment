@@ -48,7 +48,7 @@ const KpiCard = memo(function KpiCard({
             {value}
           </p>
         </div>
-        <div className="inline-flex size-10 items-center justify-center rounded-xl bg-primary-light text-primary">
+        <div className="inline-flex size-10 items-center justify-center rounded-xl">
           {icon}
         </div>
       </div>
@@ -69,14 +69,12 @@ const KpiCard = memo(function KpiCard({
 })
 
 const TxRow = memo(function TxRow({ row }: { row: TransactionRow }) {
-  const badge =
-    row.status === 'active'
-      ? 'bg-success-bg text-success-fg'
-      : row.status === 'inactive'
-        ? 'bg-warning-bg text-warning-fg'
-        : row.status === 'suspended'
-          ? 'bg-danger-bg text-danger-fg'
-          : 'bg-primary-light text-primary'
+  const isActive = row.status === 'active'
+  const badgeClass = isActive
+    ? 'bg-success-bg text-success-fg'
+    : 'bg-warning-bg text-warning-fg'
+  const dotClass = isActive ? 'bg-success-fg' : 'bg-warning-fg'
+  const statusLabel = isActive ? 'Active' : 'Pending'
   return (
     <tr className="border-t border-foreground/10">
       <td className="py-3 pr-3">
@@ -85,7 +83,7 @@ const TxRow = memo(function TxRow({ row }: { row: TransactionRow }) {
             <div className="flex h-full w-full items-center justify-center">
               {row.name
                 .split(' ')
-                .map((p) => p[0])
+                .map((word) => word[0])
                 .slice(0, 2)
                 .join('')}
             </div>
@@ -97,8 +95,14 @@ const TxRow = memo(function TxRow({ row }: { row: TransactionRow }) {
         </div>
       </td>
       <td className="py-3 pr-3">
-        <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${badge}`}>
-          {row.status[0].toUpperCase() + row.status.slice(1)}
+        <span
+          className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold ${badgeClass}`}
+        >
+          <span
+            className={`size-1.5 shrink-0 rounded-full ${dotClass}`}
+            aria-hidden
+          />
+          {statusLabel}
         </span>
       </td>
       <td className="py-3 pr-3 text-sm text-muted">{row.lastActive}</td>
@@ -112,7 +116,7 @@ const TxRow = memo(function TxRow({ row }: { row: TransactionRow }) {
 export function DashboardPage() {
   const { push } = useToast()
   const [range, setRange] = useState<DateRangeKey>('30')
-  const [txFilter, setTxFilter] = useState<'all' | 'active' | 'pending'>('all')
+  const [txFilter, setTxFilter] = useState<'active' | 'pending'>('active')
   const [insightOpen, setInsightOpen] = useState(false)
 
   const factor = rangeFactor[range]
@@ -123,10 +127,22 @@ export function DashboardPage() {
     [current, previous],
   )
 
-  const rows = useMemo(() => {
-    if (txFilter === 'all') return allTransactions
-    return allTransactions.filter((r) => r.status === txFilter)
-  }, [txFilter])
+  const weekBars = useMemo(
+    () =>
+      weekdayLabels.map((day, index) => ({
+        day,
+        currentPct: Math.round((current[index] / maxVal) * 100),
+        previousPct: Math.round((previous[index] / maxVal) * 100),
+        currentValue: current[index],
+        previousValue: previous[index],
+      })),
+    [current, previous, maxVal],
+  )
+
+  const rows = useMemo(
+    () => allTransactions.filter((r) => r.status === txFilter),
+    [txFilter],
+  )
 
   const onExport = useCallback(() => {
     push({
@@ -190,92 +206,115 @@ export function DashboardPage() {
           value="$45,231.00"
           delta="+12.5%"
           positive
-          icon={<DashboardGlyph id="dollar" className="size-5" />}
+          icon={<DashboardGlyph id="dollar" className="size-10" />}
         />
         <KpiCard
           title="Active Users"
           value="12,842"
           delta="+8.2%"
           positive
-          icon={<DashboardGlyph id="usersMetric" className="size-5" />}
+          icon={<DashboardGlyph id="usersMetric" className="size-10" />}
         />
         <KpiCard
           title="Conversion Rate"
           value="3.4%"
           delta="-1.4%"
           positive={false}
-          icon={<DashboardGlyph id="percent" className="size-5" />}
+          icon={<DashboardGlyph id="percent" className="size-10" />}
         />
       </section>
 
       <section className="grid grid-cols-1 gap-4 laptop:grid-cols-3 laptop:gap-5">
-        <div className="rounded-2xl border border-foreground/10 bg-card p-4 shadow-sm laptop:col-span-2 laptop:p-6">
+        <div className="rounded-3xl border border-foreground/10 bg-card p-5 shadow-sm laptop:col-span-2 laptop:p-8">
           <div className="flex items-center justify-between gap-3">
             <h2 className="text-lg font-bold text-foreground">Revenue Growth</h2>
-            <div className="flex items-center gap-4 text-xs font-semibold text-muted">
+            <div className="flex items-center gap-5 text-xs font-semibold text-muted">
               <span className="inline-flex items-center gap-2">
-                <span className="size-2 rounded-full bg-primary" /> Current
+                <span
+                  className="size-2 shrink-0 rounded-full bg-[#3F3D89]"
+                  aria-hidden
+                />
+                Current
               </span>
               <span className="inline-flex items-center gap-2">
-                <span className="size-2 rounded-full bg-chart-previous" /> Previous
+                <span
+                  className="size-2 shrink-0 rounded-full border border-foreground/10 bg-[#F1F3F9]"
+                  aria-hidden
+                />
+                Previous
               </span>
             </div>
           </div>
-          <div className="mt-6 flex h-56 items-end justify-between gap-2 laptop:h-64 laptop:gap-3">
-            {weekdayLabels.map((d, i) => {
-              const cH = Math.round((current[i] / maxVal) * 100)
-              const pH = Math.round((previous[i] / maxVal) * 100)
-              return (
-                <div key={d} className="flex min-w-0 flex-1 flex-col items-center gap-2">
-                  <div className="flex h-44 w-full max-w-[48px] items-end justify-center gap-1 laptop:h-52 laptop:max-w-[56px]">
+          <div className="mt-8 flex flex-col">
+            <div className="flex h-44 gap-0 laptop:h-52">
+              {weekBars.map(
+                ({
+                  day,
+                  currentPct,
+                  previousPct,
+                  currentValue,
+                  previousValue,
+                }) => (
+                  <div
+                    key={day}
+                    className="relative h-full min-w-0 flex-1"
+                  >
                     <div
-                      className="w-[42%] rounded-md bg-chart-previous"
-                      style={{ height: `${pH}%` }}
-                      title={`Previous ${previous[i]}`}
+                      className="absolute inset-x-0 bottom-0 rounded-t-sm bg-[#F1F3F9]"
+                      style={{ height: `${previousPct}%` }}
+                      title={`Previous ${previousValue}`}
                     />
                     <div
-                      className="w-[42%] rounded-md bg-chart-current"
-                      style={{ height: `${cH}%` }}
-                      title={`Current ${current[i]}`}
+                      className="absolute inset-x-0 bottom-0 z-1 rounded-t-sm bg-[#3F3D89]"
+                      style={{ height: `${currentPct}%` }}
+                      title={`Current ${currentValue}`}
                     />
                   </div>
-                  <span className="text-xs font-semibold text-muted">{d}</span>
-                </div>
-              )
-            })}
+                ),
+              )}
+            </div>
+            <div className="mt-0 border-t border-foreground/10 pt-2">
+              <div className="flex gap-0">
+                {weekBars.map(({ day }) => (
+                  <div
+                    key={`${day}-label`}
+                    className="min-w-0 flex-1 text-center text-[11px] font-semibold uppercase tracking-wide text-muted"
+                  >
+                    {day}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="rounded-2xl bg-insight p-5 text-card shadow-sm laptop:p-6">
-          <p className="text-xs font-bold uppercase tracking-wide text-card/80">
-            New Insights
-          </p>
-          <h3 className="mt-2 text-xl font-bold leading-snug laptop:text-2xl">
-            Anomaly detected in checkout conversion
+        <div className="flex flex-col items-stretch rounded-[32px] bg-[#3F41A4] p-8 shadow-sm">
+          <span className="w-fit rounded-md bg-white/20 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
+            New insights
+          </span>
+          <h3 className="mt-4 text-2xl font-bold leading-tight text-white laptop:text-3xl">
+            Machine learning detected a 14% anomaly in User Retention.
           </h3>
-          <p className="mt-3 text-sm leading-relaxed text-card/90">
-            Machine learning models identified a sharp drop correlated with mobile Safari users.
+          <p className="mt-4 text-base leading-relaxed text-white/90">
+            Most active users are coming from Central Europe. Would you like to
+            optimize servers for that region?
           </p>
-          <div className="mt-5">
-            <Button
-              variant="secondary"
-              size="md"
-              className="!bg-card !text-primary"
-              onClick={() => setInsightOpen(true)}
-            >
-              Investigate Now
-            </Button>
-          </div>
+          <button
+            type="button"
+            onClick={() => setInsightOpen(true)}
+            className="mt-8 w-full cursor-pointer rounded-2xl bg-white py-4 text-center text-base font-bold text-[#3F41A4] transition-colors hover:bg-white/90"
+          >
+            Investigate Now
+          </button>
         </div>
       </section>
 
       <section className="rounded-2xl border border-foreground/10 bg-card p-4 shadow-sm laptop:p-6">
         <div className="flex flex-col gap-3 laptop:flex-row laptop:items-center laptop:justify-between">
           <h2 className="text-lg font-bold text-foreground">Recent Transactions</h2>
-          <div className="inline-flex rounded-full border border-foreground/10 bg-page p-1">
+          <div className="flex flex-wrap gap-2">
             {(
               [
-                ['all', 'All'],
                 ['active', 'Active'],
                 ['pending', 'Pending'],
               ] as const
@@ -284,10 +323,10 @@ export function DashboardPage() {
                 key={key}
                 type="button"
                 onClick={() => setTxFilter(key)}
-                className={`cursor-pointer rounded-full px-3 py-1.5 text-xs font-semibold transition-colors laptop:text-sm ${
+                className={`cursor-pointer rounded-xl px-3 py-1.5 text-xs font-bold transition-colors laptop:text-sm ${
                   txFilter === key
-                    ? 'bg-primary text-card'
-                    : 'text-muted hover:text-foreground'
+                    ? 'bg-[#F1F5F9] text-foreground'
+                    : 'border border-foreground/10 bg-card text-muted hover:text-foreground'
                 }`}
               >
                 {label}
@@ -301,7 +340,7 @@ export function DashboardPage() {
               <tr className="text-xs font-bold uppercase tracking-wide text-muted">
                 <th className="pb-2 pr-3">User</th>
                 <th className="pb-2 pr-3">Status</th>
-                <th className="pb-2 pr-3">Last Active</th>
+                <th className="pb-2 pr-3">Last active</th>
                 <th className="pb-2 text-right">Revenue</th>
               </tr>
             </thead>

@@ -1,9 +1,8 @@
 import type { Product, ProductsResponse } from '../types'
 
-const BASE =
-  import.meta.env.PROD === true
-    ? 'https://dummyjson.com'
-    : '/api/dummyjson'
+const apiRoot = import.meta.env.DEV
+  ? '/api/dummyjson'
+  : 'https://dummyjson.com'
 
 function normalizeProduct(raw: Product & Record<string, unknown>): Product {
   const thumb =
@@ -35,8 +34,8 @@ function normalizeProduct(raw: Product & Record<string, unknown>): Product {
 function normalizeResponse(data: ProductsResponse): ProductsResponse {
   return {
     ...data,
-    products: data.products.map((p) =>
-      normalizeProduct(p as Product & Record<string, unknown>),
+    products: data.products.map((product) =>
+      normalizeProduct(product as Product & Record<string, unknown>),
     ),
   }
 }
@@ -58,7 +57,7 @@ function parseCategorySlugs(data: unknown): string[] {
 }
 
 export async function fetchCategories(signal?: AbortSignal): Promise<string[]> {
-  const res = await fetch(`${BASE}/products/categories`, { signal })
+  const res = await fetch(`${apiRoot}/products/categories`, { signal })
   if (!res.ok) throw new Error('Failed to load categories')
   return parseCategorySlugs(await res.json())
 }
@@ -76,7 +75,7 @@ export async function fetchProductsPage(params: {
   if (query.trim()) {
     const q = encodeURIComponent(query.trim())
     const res = await fetch(
-      `${BASE}/products/search?q=${q}&limit=${pageSize}&skip=${skip}`,
+      `${apiRoot}/products/search?q=${q}&limit=${pageSize}&skip=${skip}`,
       { signal },
     )
     if (!res.ok) throw new Error('Search failed')
@@ -84,14 +83,16 @@ export async function fetchProductsPage(params: {
     if (!category) return data
     return {
       ...data,
-      products: data.products.filter((p) => p.category === category),
+      products: data.products.filter(
+        (product) => product.category === category,
+      ),
       total: data.total,
     }
   }
 
   if (category) {
     const res = await fetch(
-      `${BASE}/products/category/${encodeURIComponent(category)}?limit=${pageSize}&skip=${skip}`,
+      `${apiRoot}/products/category/${encodeURIComponent(category)}?limit=${pageSize}&skip=${skip}`,
       { signal },
     )
     if (!res.ok) throw new Error('Failed to load category')
@@ -99,7 +100,7 @@ export async function fetchProductsPage(params: {
   }
 
   const res = await fetch(
-    `${BASE}/products?limit=${pageSize}&skip=${skip}`,
+    `${apiRoot}/products?limit=${pageSize}&skip=${skip}`,
     { signal },
   )
   if (!res.ok) throw new Error('Failed to load products')

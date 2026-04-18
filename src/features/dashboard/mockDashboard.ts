@@ -1,6 +1,6 @@
 export type DateRangeKey = '7' | '30' | '90'
 
-export type TxStatus = 'active' | 'inactive' | 'suspended' | 'pending'
+export type TxStatus = 'active' | 'pending'
 
 export type TransactionRow = {
   id: string
@@ -11,10 +11,18 @@ export type TransactionRow = {
   revenue: string
 }
 
-export const weekdayLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as const
+export const weekdayLabels = [
+  'MON',
+  'TUE',
+  'WED',
+  'THU',
+  'FRI',
+  'SAT',
+  'SUN',
+] as const
 
-export const baseCurrent = [42, 55, 48, 62, 58, 70, 66]
-export const basePrevious = [36, 44, 40, 50, 48, 58, 54]
+export const baseCurrent = [25, 40, 65, 45, 80, 50, 30]
+export const basePrevious = [35, 50, 75, 55, 85, 60, 45]
 
 export function scaleSeries(
   series: readonly number[],
@@ -26,42 +34,34 @@ export function scaleSeries(
 export const allTransactions: TransactionRow[] = [
   {
     id: '1',
-    name: 'Sarah Chen',
-    email: 'sarah.chen@example.com',
+    name: 'Alexandre Paiva',
+    email: 'alex@design.co',
     status: 'active',
     lastActive: '2 mins ago',
-    revenue: '$1,240.00',
+    revenue: '$1,450.00',
   },
   {
     id: '2',
-    name: 'Marcus Johnson',
-    email: 'marcus.j@example.com',
-    status: 'inactive',
-    lastActive: '1 hour ago',
-    revenue: '$890.50',
+    name: 'Sarah Jenkins',
+    email: 'sarah@fintech.io',
+    status: 'pending',
+    lastActive: '4 hours ago',
+    revenue: '$2,890.00',
   },
   {
     id: '3',
-    name: 'Elena Rodriguez',
-    email: 'elena.r@example.com',
-    status: 'suspended',
-    lastActive: 'Yesterday',
-    revenue: '$2,450.00',
+    name: 'David Miller',
+    email: 'd.miller@techhub.com',
+    status: 'active',
+    lastActive: '12 mins ago',
+    revenue: '$840.50',
   },
   {
     id: '4',
-    name: 'David Kim',
-    email: 'david.kim@example.com',
+    name: 'Elena Rodriguez',
+    email: 'elena.r@agency.com',
     status: 'pending',
-    lastActive: '3 days ago',
-    revenue: '$560.00',
-  },
-  {
-    id: '5',
-    name: 'Priya Patel',
-    email: 'priya.patel@example.com',
-    status: 'active',
-    lastActive: '5 mins ago',
-    revenue: '$3,120.75',
+    lastActive: '1 day ago',
+    revenue: '$5,200.00',
   },
 ]

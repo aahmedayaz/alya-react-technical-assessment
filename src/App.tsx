@@ -1,5 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { Layout } from './components/layout'
+import { RouteSeo } from './components/layout/RouteSeo'
 import { DashboardPage } from './pages/DashboardPage'
 import { LibraryPage } from './pages/LibraryPage'
 import { OnboardingPage } from './features/onboarding/OnboardingPage'
@@ -9,6 +10,7 @@ import { SettingsPage } from './pages/SettingsPage'
 function App() {
   return (
     <BrowserRouter>
+      <RouteSeo />
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<DashboardPage />} />

@@ -14,8 +14,8 @@ export const primaryNav: {
   showInMobileDock: boolean
 }[] = [
   { id: 'dashboard', label: 'Dashboard', glyph: 'dashboard', showInMobileDock: true },
-  { id: 'analytics', label: 'Analytics', glyph: 'analytics', showInMobileDock: true },
-  { id: 'reports', label: 'Reports', glyph: 'reports', showInMobileDock: false },
-  { id: 'users', label: 'Users', glyph: 'users', showInMobileDock: true },
+  { id: 'analytics', label: 'Shop', glyph: 'analytics', showInMobileDock: true },
+  { id: 'reports', label: 'Profile', glyph: 'reports', showInMobileDock: false },
+  { id: 'users', label: 'Library', glyph: 'users', showInMobileDock: true },
   { id: 'settings', label: 'Settings', glyph: 'settings', showInMobileDock: true },
 ]

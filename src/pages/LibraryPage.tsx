@@ -12,7 +12,7 @@ export function LibraryPage() {
       <header>
         <h1 className="text-2xl font-bold text-foreground">Component library</h1>
         <p className="mt-2 text-sm text-muted">
-          Task 4 primitives use CSS Modules (not Tailwind) under{' '}
+          These primitives are styled with CSS Modules (not Tailwind) under{' '}
           <code className="rounded bg-page px-1 py-0.5 text-xs">src/components/library</code>.
         </p>
       </header>

@@ -15,19 +15,19 @@ const PAGE_SIZE = 12
 const DEBOUNCE_MS = 400
 
 const ProductCard = memo(function ProductCard({
-  p,
-  onCart,
+  product,
+  onAddToCart,
 }: {
-  p: Product
-  onCart: (title: string) => void
+  product: Product
+  onAddToCart: (title: string) => void
 }) {
-  const rating = p.rating?.rate ?? 0
-  const count = p.rating?.count ?? 0
+  const rating = product.rating?.rate ?? 0
+  const reviewCount = product.rating?.count ?? 0
   return (
     <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-foreground/10 bg-card shadow-sm">
       <div className="aspect-square w-full overflow-hidden bg-page p-4">
         <img
-          src={p.image}
+          src={product.image}
           alt=""
           className="h-full w-full object-contain"
           loading="lazy"
@@ -37,21 +37,21 @@ const ProductCard = memo(function ProductCard({
       <div className="flex flex-1 flex-col gap-2 p-4">
         <div className="flex items-start justify-between gap-2">
           <h3 className="min-w-0 flex-1 text-sm font-bold leading-snug text-foreground">
-            {p.title}
+            {product.title}
           </h3>
           <span className="shrink-0 text-sm font-bold text-primary">
-            ${p.price.toFixed(2)}
+            ${product.price.toFixed(2)}
           </span>
         </div>
         <p className="text-xs text-muted">
-          ★ {rating.toFixed(1)} ({count} reviews)
+          ★ {rating.toFixed(1)} ({reviewCount} reviews)
         </p>
         <div className="mt-auto pt-2">
           <Button
             variant="primary"
             size="md"
             className="w-full"
-            onClick={() => onCart(p.title)}
+            onClick={() => onAddToCart(product.title)}
           >
             Add to cart
           </Button>
@@ -85,46 +85,44 @@ export function ProductsPage() {
   const [total, setTotal] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [retryToken, setRetryToken] = useState(0)
+  const [manualReloadCount, setManualReloadCount] = useState(0)
 
-  const abortRef = useRef<AbortController | null>(null)
-  const prevFiltersRef = useRef<{ category: string | null; q: string } | null>(
-    null,
-  )
+  const lastAppliedListFilters = useRef<{
+    category: string | null
+    q: string
+  } | null>(null)
 
   useEffect(() => {
-    let cancelled = false
+    let stillMounted = true
     ;(async () => {
       try {
-        const cats = await fetchCategories()
-        if (!cancelled) setCategories(cats)
+        const slugList = await fetchCategories()
+        if (stillMounted) setCategories(slugList)
       } catch {
-        if (!cancelled) setCategories([])
+        if (stillMounted) setCategories([])
       }
     })()
     return () => {
-      cancelled = true
+      stillMounted = false
     }
   }, [])
 
   useEffect(() => {
-    abortRef.current?.abort()
-    const ac = new AbortController()
-    abortRef.current = ac
+    const listRequest = new AbortController()
 
-    const prev = prevFiltersRef.current
-    const filtersChanged =
-      prev === null ||
-      prev.category !== category ||
-      prev.q !== debouncedQuery
+    const previous = lastAppliedListFilters.current
+    const searchOrCategoryChanged =
+      previous === null ||
+      previous.category !== category ||
+      previous.q !== debouncedQuery
 
-    if (filtersChanged) {
-      prevFiltersRef.current = { category, q: debouncedQuery }
+    if (searchOrCategoryChanged) {
+      lastAppliedListFilters.current = { category, q: debouncedQuery }
       if (page !== 1) {
         setPage(1)
         setLoading(true)
         setError(null)
-        return () => ac.abort()
+        return () => listRequest.abort()
       }
     }
 
@@ -137,23 +135,21 @@ export function ProductsPage() {
           pageSize: PAGE_SIZE,
           category,
           query: debouncedQuery,
-          signal: ac.signal,
+          signal: listRequest.signal,
         })
         setProducts(data.products)
         setTotal(data.total)
-      } catch (e) {
-        if ((e as Error).name === 'AbortError') return
+      } catch (err) {
+        if ((err as Error).name === 'AbortError') return
         setError('Could not load products.')
         setProducts([])
         setTotal(0)
       } finally {
-        if (!ac.signal.aborted) setLoading(false)
+        if (!listRequest.signal.aborted) setLoading(false)
       }
     })()
-    return () => ac.abort()
-  }, [page, category, debouncedQuery, retryToken])
-
-  const visible = useMemo(() => products, [products])
+    return () => listRequest.abort()
+  }, [page, category, debouncedQuery, manualReloadCount])
 
   const maxPage = useMemo(
     () => Math.max(1, Math.ceil(total / PAGE_SIZE)),
@@ -164,12 +160,12 @@ export function ProductsPage() {
     setPage(1)
     setError(null)
     push({ type: 'info', title: 'Retrying', message: 'Fetching products again.' })
-    setRetryToken((n) => n + 1)
+    setManualReloadCount((n) => n + 1)
   }, [push])
 
-  const empty = !loading && !error && visible.length === 0
+  const showEmptyState = !loading && !error && products.length === 0
 
-  const onCart = useCallback(
+  const notifyAddedToCart = useCallback(
     (title: string) => {
       push({
         type: 'success',
@@ -218,18 +214,18 @@ export function ProductsPage() {
         >
           All
         </button>
-        {categories.slice(0, 8).map((c) => (
+        {categories.slice(0, 8).map((slug) => (
           <button
-            key={c}
+            key={slug}
             type="button"
-            onClick={() => setCategory(c === category ? null : c)}
+            onClick={() => setCategory(slug === category ? null : slug)}
             className={`cursor-pointer rounded-full border px-3 py-1.5 text-sm font-semibold capitalize transition-colors ${
-              category === c
+              category === slug
                 ? 'border-primary bg-primary text-card'
                 : 'border-foreground/15 bg-card text-foreground hover:border-primary/40'
             }`}
           >
-            {c.replace(/-/g, ' ')}
+            {slug.replace(/-/g, ' ')}
           </button>
         ))}
       </div>
@@ -245,7 +241,7 @@ export function ProductsPage() {
         </div>
       ) : null}
 
-      {empty ? (
+      {showEmptyState ? (
         <div className="rounded-2xl border border-dashed border-foreground/20 bg-page p-10 text-center">
           <p className="text-lg font-bold text-foreground">No matches</p>
           <p className="mt-2 text-sm text-muted">
@@ -257,24 +253,30 @@ export function ProductsPage() {
       <div className="grid grid-cols-1 gap-4 tablet:grid-cols-2 laptop:grid-cols-3 laptop:gap-5">
         {loading
           ? Array.from({ length: 6 }).map((_, i) => <ProductSkeleton key={i} />)
-          : visible.map((p) => (
-              <ProductCard key={p.id} p={p} onCart={onCart} />
+          : products.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onAddToCart={notifyAddedToCart}
+              />
             ))}
       </div>
 
-      {!loading && !error && visible.length > 0 ? (
+      {!loading && !error && products.length > 0 ? (
         <div className="flex flex-wrap items-center justify-between gap-3 border-t border-foreground/10 pt-4">
           <Button
             variant="ghost"
             disabled={page <= 1}
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            onClick={() => setPage((prevPage) => Math.max(1, prevPage - 1))}
           >
             Previous
           </Button>
           <Button
             variant="ghost"
             disabled={page >= maxPage}
-            onClick={() => setPage((p) => Math.min(maxPage, p + 1))}
+            onClick={() =>
+              setPage((prevPage) => Math.min(maxPage, prevPage + 1))
+            }
           >
             Next
           </Button>

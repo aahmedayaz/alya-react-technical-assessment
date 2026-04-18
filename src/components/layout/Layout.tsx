@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import type { NavRouteId } from './navConfig'
 import { BottomNav } from './BottomNav'
@@ -28,10 +28,7 @@ export function Layout() {
   const location = useLocation()
   const { push } = useToast()
 
-  const activeId = useMemo(
-    () => pathToActive(location.pathname),
-    [location.pathname],
-  )
+  const activeNav = pathToActive(location.pathname)
 
   useEffect(() => {
     if (!drawerOpen) return
@@ -74,7 +71,7 @@ export function Layout() {
       </a>
       <div className="hidden laptop:fixed laptop:inset-y-0 laptop:left-0 laptop:z-30 laptop:flex">
         <Sidebar
-          activeId={activeId}
+          activeId={activeNav}
           onSelect={onSelect}
           onNewInsight={onNewInsight}
         />
@@ -89,7 +86,7 @@ export function Layout() {
           />
           <div className="absolute left-0 top-0 flex h-full w-[min(280px,88vw)] bg-sidebar shadow-2xl">
             <Sidebar
-              activeId={activeId}
+              activeId={activeNav}
               onSelect={(id) => {
                 onSelect(id)
                 setDrawerOpen(false)
@@ -112,7 +109,7 @@ export function Layout() {
         >
           <Outlet />
         </main>
-        <BottomNav activeId={activeId} onSelect={onSelect} />
+        <BottomNav activeId={activeNav} onSelect={onSelect} />
       </div>
     </div>
   )
