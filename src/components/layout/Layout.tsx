@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import type { NavRouteId } from './navConfig'
 import { BottomNav } from './BottomNav'
@@ -107,7 +107,19 @@ export function Layout() {
           role="main"
           tabIndex={-1}
         >
-          <Outlet />
+          <Suspense
+            fallback={
+              <div
+                className="flex min-h-[30vh] items-center justify-center text-sm text-muted"
+                role="status"
+                aria-live="polite"
+              >
+                Loading…
+              </div>
+            }
+          >
+            <Outlet />
+          </Suspense>
         </main>
         <BottomNav activeId={activeNav} onSelect={onSelect} />
       </div>

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import type { NavRouteId } from './navConfig'
 import { primaryNav } from './navConfig'
 import { NavGlyph } from './NavGlyph'
@@ -24,14 +25,17 @@ export function Sidebar({
       <div
         className={`flex min-h-0 flex-1 flex-col px-3 pt-5 ${innerClassName ?? ''}`}
       >
-        <div className="mb-6 flex cursor-pointer items-center gap-3 px-2">
+        <Link
+          to="/"
+          className="mb-6 flex items-center gap-3 rounded-lg px-2 py-1 outline-none transition-colors hover:bg-foreground/4 focus-visible:ring-2 focus-visible:ring-primary/40"
+        >
           <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary text-card">
             <NavGlyph id="logoMark" className="size-5 text-card" />
           </span>
-          <span className="truncate text-sm md:text-[22px] font-bold text-primary">
+          <span className="truncate text-sm font-bold text-primary md:text-[22px]">
             Sample Logo
           </span>
-        </div>
+        </Link>
         <nav className="flex min-h-0 flex-1 flex-col gap-1" aria-label="Primary">
           {primaryNav.map((item) => {
             const active = activeId === item.id

@@ -68,6 +68,38 @@ const KpiCard = memo(function KpiCard({
   )
 })
 
+const TxAvatar = memo(function TxAvatar({
+  name,
+  avatarSrc,
+}: {
+  name: string
+  avatarSrc?: string
+}) {
+  const [failed, setFailed] = useState(false)
+  const initials = name
+    .split(' ')
+    .map((word) => word[0])
+    .slice(0, 2)
+    .join('')
+  if (avatarSrc && !failed) {
+    return (
+      <img
+        src={avatarSrc}
+        alt=""
+        className="size-9 shrink-0 rounded-full object-cover"
+        loading="lazy"
+        decoding="async"
+        onError={() => setFailed(true)}
+      />
+    )
+  }
+  return (
+    <div className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary-light text-xs font-bold text-primary">
+      {initials}
+    </div>
+  )
+})
+
 const TxRow = memo(function TxRow({ row }: { row: TransactionRow }) {
   const isActive = row.status === 'active'
   const badgeClass = isActive
@@ -79,15 +111,7 @@ const TxRow = memo(function TxRow({ row }: { row: TransactionRow }) {
     <tr className="border-t border-foreground/10">
       <td className="py-3 pr-3">
         <div className="flex items-center gap-3">
-          <div className="size-9 overflow-hidden rounded-lg bg-primary-light text-xs font-bold text-primary">
-            <div className="flex h-full w-full items-center justify-center">
-              {row.name
-                .split(' ')
-                .map((word) => word[0])
-                .slice(0, 2)
-                .join('')}
-            </div>
-          </div>
+          <TxAvatar name={row.name} avatarSrc={row.avatarSrc} />
           <div className="min-w-0">
             <p className="truncate font-semibold text-foreground">{row.name}</p>
             <p className="truncate text-xs text-muted">{row.email}</p>
@@ -116,7 +140,7 @@ const TxRow = memo(function TxRow({ row }: { row: TransactionRow }) {
 export function DashboardPage() {
   const { push } = useToast()
   const [range, setRange] = useState<DateRangeKey>('30')
-  const [txFilter, setTxFilter] = useState<'active' | 'pending'>('active')
+  const [txFilter, setTxFilter] = useState<'all' | 'active' | 'pending'>('all')
   const [insightOpen, setInsightOpen] = useState(false)
 
   const factor = rangeFactor[range]
@@ -139,10 +163,10 @@ export function DashboardPage() {
     [current, previous, maxVal],
   )
 
-  const rows = useMemo(
-    () => allTransactions.filter((r) => r.status === txFilter),
-    [txFilter],
-  )
+  const rows = useMemo(() => {
+    if (txFilter === 'all') return allTransactions
+    return allTransactions.filter((r) => r.status === txFilter)
+  }, [txFilter])
 
   const onExport = useCallback(() => {
     push({
@@ -315,6 +339,7 @@ export function DashboardPage() {
           <div className="flex flex-wrap gap-2">
             {(
               [
+                ['all', 'All'],
                 ['active', 'Active'],
                 ['pending', 'Pending'],
               ] as const
@@ -323,7 +348,7 @@ export function DashboardPage() {
                 key={key}
                 type="button"
                 onClick={() => setTxFilter(key)}
-                className={`cursor-pointer rounded-xl px-3 py-1.5 text-xs font-bold transition-colors laptop:text-sm ${
+                className={`cursor-pointer rounded-full px-3 py-1.5 text-xs font-bold transition-colors laptop:text-sm ${
                   txFilter === key
                     ? 'bg-[#F1F5F9] text-foreground'
                     : 'border border-foreground/10 bg-card text-muted hover:text-foreground'

@@ -56,24 +56,25 @@ export function Navbar({ onOpenMenu }: NavbarProps) {
             </p>
             <p className="truncate text-xs text-muted">{profile.title}</p>
           </div>
-          <div
-            className="relative shrink-0 cursor-pointer"
+          <button
+            type="button"
+            className="relative shrink-0 cursor-pointer rounded-lg outline-none ring-primary/30 focus-visible:ring-2"
             aria-label={`Signed in as ${profile.name}`}
           >
             <div className="flex size-11 items-center justify-center overflow-hidden rounded-lg text-primary">
               <NavGlyph id="avatar" className="h-full w-full [&>svg]:overflow-hidden [&>svg]:rounded-lg" />
             </div>
-            
-          </div>
+          </button>
         </div>
-        <div
-          className="relative shrink-0 cursor-pointer laptop:hidden"
+        <button
+          type="button"
+          className="relative shrink-0 cursor-pointer rounded-lg outline-none ring-primary/30 focus-visible:ring-2 laptop:hidden"
           aria-label={`Signed in as ${profile.name}`}
         >
           <div className="flex size-11 items-center justify-center overflow-hidden text-primary">
             <NavGlyph id="avatar" className="h-full w-full [&>svg]:overflow-hidden [&>svg]:rounded-md" />
           </div>
-        </div>
+        </button>
       </div>
     </header>
   )

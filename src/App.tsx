@@ -1,11 +1,25 @@
+import { lazy } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { Layout } from './components/layout'
 import { RouteSeo } from './components/layout/RouteSeo'
-import { DashboardPage } from './pages/DashboardPage'
-import { LibraryPage } from './pages/LibraryPage'
-import { OnboardingPage } from './features/onboarding/OnboardingPage'
-import { ProductsPage } from './pages/ProductsPage'
-import { SettingsPage } from './pages/SettingsPage'
+
+const DashboardPage = lazy(() =>
+  import('./pages/DashboardPage').then((m) => ({ default: m.DashboardPage })),
+)
+const ProductsPage = lazy(() =>
+  import('./pages/ProductsPage').then((m) => ({ default: m.ProductsPage })),
+)
+const OnboardingPage = lazy(() =>
+  import('./features/onboarding/OnboardingPage').then((m) => ({
+    default: m.OnboardingPage,
+  })),
+)
+const LibraryPage = lazy(() =>
+  import('./pages/LibraryPage').then((m) => ({ default: m.LibraryPage })),
+)
+const SettingsPage = lazy(() =>
+  import('./pages/SettingsPage').then((m) => ({ default: m.SettingsPage })),
+)
 
 function App() {
   return (

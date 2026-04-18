@@ -9,6 +9,7 @@ export type TransactionRow = {
   status: TxStatus
   lastActive: string
   revenue: string
+  avatarSrc?: string
 }
 
 export const weekdayLabels = [
@@ -31,6 +32,8 @@ export function scaleSeries(
   return series.map((v) => Math.round(v * factor))
 }
 
+const avatar = (filename: string) => `/avatars/transactions/${filename}`
+
 export const allTransactions: TransactionRow[] = [
   {
     id: '1',
@@ -39,6 +42,7 @@ export const allTransactions: TransactionRow[] = [
     status: 'active',
     lastActive: '2 mins ago',
     revenue: '$1,450.00',
+    avatarSrc: avatar('alexandre-paiva.png'),
   },
   {
     id: '2',
@@ -47,6 +51,7 @@ export const allTransactions: TransactionRow[] = [
     status: 'pending',
     lastActive: '4 hours ago',
     revenue: '$2,890.00',
+    avatarSrc: avatar('sarah-jenkins.png'),
   },
   {
     id: '3',
@@ -55,6 +60,7 @@ export const allTransactions: TransactionRow[] = [
     status: 'active',
     lastActive: '12 mins ago',
     revenue: '$840.50',
+    avatarSrc: avatar('david-miller.png'),
   },
   {
     id: '4',
@@ -63,5 +69,6 @@ export const allTransactions: TransactionRow[] = [
     status: 'pending',
     lastActive: '1 day ago',
     revenue: '$5,200.00',
+    avatarSrc: avatar('elena-rodriguez.png'),
   },
 ]

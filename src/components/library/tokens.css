@@ -1,5 +1,5 @@
 :root {
-  --lib-font: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --lib-font: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
   --lib-radius-sm: 8px;
   --lib-radius-md: 12px;
   --lib-radius-lg: 16px;
