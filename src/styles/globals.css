@@ -3,12 +3,17 @@
 
 @layer base {
   html {
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow-x: clip;
     font-family: var(--font-sans);
   }
 
   body {
     margin: 0;
-    min-height: 100dvh;
+    height: 100%;
+    overflow: hidden;
+    overflow-x: clip;
     background-color: var(--color-page);
     color: var(--color-foreground);
     font-family: var(--font-sans);
@@ -18,9 +23,12 @@
 
   #root {
     margin-inline: auto;
-    min-height: 100dvh;
+    height: 100%;
+    min-width: 0;
     width: 100%;
     max-width: var(--app-max-width);
+    overflow: hidden;
+    overflow-x: clip;
     transform: translateZ(0);
   }
 }

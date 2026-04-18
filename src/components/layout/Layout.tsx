@@ -62,7 +62,7 @@ export function Layout() {
   }
 
   return (
-    <div className="min-h-dvh bg-page text-foreground">
+    <div className="flex h-full min-h-0 min-w-0 flex-col overflow-hidden bg-page text-foreground">
       <a
         href="#main-content"
         className="sr-only left-4 top-4 z-60 rounded bg-primary px-3 py-2 text-sm font-medium text-card focus:not-sr-only focus:absolute focus:outline-none focus:ring-2 focus:ring-primary/50"
@@ -100,10 +100,10 @@ export function Layout() {
         </div>
       ) : null}
       <Navbar onOpenMenu={() => setDrawerOpen(true)} />
-      <div className="flex min-h-dvh flex-col pt-14 laptop:pl-[260px] laptop:pt-16">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col pt-14 laptop:pl-[260px] laptop:pt-16">
         <main
           id="main-content"
-          className="flex-1 px-4 pb-24 pt-2 laptop:px-8 laptop:pb-8 laptop:pt-4 bg-sidebar"
+          className="min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden overscroll-y-contain bg-sidebar px-4 pb-24 pt-2 laptop:px-8 laptop:pb-8 laptop:pt-4"
           role="main"
           tabIndex={-1}
         >

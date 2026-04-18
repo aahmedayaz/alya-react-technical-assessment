@@ -19,7 +19,7 @@ export function Sidebar({
 }: SidebarProps) {
   return (
     <aside
-      className={`flex h-full w-[260px] shrink-0 flex-col border-r border-foreground/10 bg-sidebar ${className ?? ''}`}
+      className={`flex h-full max-h-dvh w-[260px] shrink-0 flex-col overflow-x-hidden overflow-y-auto overscroll-y-contain border-r border-foreground/10 bg-sidebar ${className ?? ''}`}
     >
       <div
         className={`flex min-h-0 flex-1 flex-col px-3 pt-5 ${innerClassName ?? ''}`}

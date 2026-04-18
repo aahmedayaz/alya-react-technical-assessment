@@ -15,8 +15,8 @@ export function SettingsPage() {
         </p>
       </header>
       <div className="rounded-2xl border border-foreground/10 bg-card p-5 shadow-sm">
-        <div className="flex items-center justify-between gap-4">
-          <div>
+        <div className="flex items-center justify-between gap-4 overflow-visible">
+          <div className="min-w-0">
             <p className="font-semibold text-foreground">Weekly digest</p>
             <p className="text-sm text-muted">Email summary every Monday.</p>
           </div>
@@ -25,13 +25,13 @@ export function SettingsPage() {
             role="switch"
             aria-checked={digest}
             onClick={() => setDigest((v) => !v)}
-            className={`relative h-8 w-14 rounded-full transition-colors ${
+            className={`relative inline-flex h-8 w-14 shrink-0 overflow-visible rounded-full transition-colors ${
               digest ? 'bg-primary' : 'bg-foreground/15'
             }`}
           >
             <span
-              className={`absolute top-1 size-6 rounded-full bg-card transition-transform ${
-                digest ? 'translate-x-7' : 'translate-x-1'
+              className={`pointer-events-none absolute top-1 size-6 rounded-full bg-card shadow-sm transition-[left] duration-200 ease-out ${
+                digest ? 'left-7' : 'left-1'
               }`}
             />
           </button>

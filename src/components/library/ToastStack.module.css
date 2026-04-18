@@ -66,14 +66,21 @@
 }
 
 .close {
+  flex-shrink: 0;
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
   border: 0;
+  border-radius: 9999px;
   background: transparent;
   cursor: pointer;
   color: var(--lib-muted);
   font-size: 1.1rem;
   line-height: 1;
-  padding: 0.15rem;
-  border-radius: 8px;
 }
 
 .close:hover {

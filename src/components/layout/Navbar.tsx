@@ -15,7 +15,7 @@ export function Navbar({ onOpenMenu }: NavbarProps) {
       className="fixed left-0 right-0 top-0 z-40 border-b border-foreground/10 bg-card laptop:left-[260px]"
       role="banner"
     >
-      <div className="mx-auto flex h-14 max-w-[100vw] items-center gap-3 px-4 laptop:h-16 laptop:gap-6 laptop:px-8">
+      <div className="mx-auto flex h-14 w-full min-w-0 max-w-full items-center gap-3 px-4 laptop:h-16 laptop:gap-6 laptop:px-8">
         <button
           type="button"
           onClick={onOpenMenu}
