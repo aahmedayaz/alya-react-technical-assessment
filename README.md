@@ -120,6 +120,14 @@ Replace that file with your own SVG (simple mark, good contrast at 16×16). Most
 
 Quality checks on the production deploy use Google’s **[PageSpeed Insights](https://pagespeed.web.dev/)** (same Lighthouse engine as Chrome DevTools). The goal is **100/100** across **Performance**, **Accessibility**, **Best Practices**, and **SEO** on both mobile and desktop. Enter the live URL, run the analysis, and use the reported opportunities (render-blocking resources, unused JS, accessibility issues, etc.) as the checklist for fixes. Lab scores can move a point or two between runs because of network variance and simulated throttling.
 
+<img width="1907" height="877" alt="image" src="https://github.com/user-attachments/assets/242d47dd-2cd3-4da3-b966-3e4f2a6cda25" />
+
+<br>
+
+<img width="1897" height="878" alt="image" src="https://github.com/user-attachments/assets/2b97a1a2-121b-41ab-ac40-a0baf60c9f05" />
+
+
+
 ---
 
 Thanks for reading — if something does not build on your machine, double-check Node version and that port `5173` is free.
